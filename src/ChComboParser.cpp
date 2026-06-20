@@ -174,5 +174,27 @@ int main(int argc, char* argv[]) {
         std::sort(finalResults.begin(), finalResults.end());
     }
 
+    auto t1 = std::chrono::high_resolution_clock::now();
+    double elapsed = std::chrono::duration<double>(t1 - t0).count();
+
+    if (!cfg.countOnly) {
+        if (!cfg.quiet) std::cout << "  [4/4] Writing output to " << cfg.outputFile << "...\n";
+
+        if (cfg.outputFile == "-") {
+            for (const auto& line : finalResults) {
+                std::cout << line << "\n";
+            }
+        } else {
+            std::ofstream outFile(cfg.outputFile, std::ios::binary);
+            if (!outFile.is_open()) {
+                std::cerr << "Error: Cannot open output file: " << cfg.outputFile << "\n";
+                return 1;
+            }
+            for (const auto& line : finalResults) {
+                outFile << line << "\n";
+            }
+        }
+    }
+
     
 }
