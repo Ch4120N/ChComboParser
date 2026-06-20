@@ -19,6 +19,18 @@
 
 ---
 
+## 🎯 Made For (Target Audience)
+
+`ChComboParser` was specifically crafted by **Ch4120N** to support the cybersecurity community. It is an essential utility for:
+
+- 🛡️ **Penetration Testers & Red Teamers:** Rapidly cleaning, deduplicating, and formatting combo lists for authorized password spraying and credential stuffing assessments.
+- 🔍 **Security Researchers & Threat Intel Analysts:** Processing massive leaked datasets to extract specific fields (e.g., isolating passwords to study cracking patterns or extracting emails for OSINT).
+- 🏢 **Blue Teamers & System Administrators:** Auditing internal user directories against known breach databases to quickly identify and remediate compromised accounts.
+- 🐛 **Bug Bounty Hunters:** Efficiently filtering and preparing wordlists to test for weak or default credentials within authorized scopes.
+- 🎓 **CTF Players & Cybersecurity Students:** Parsing and manipulating credential formats for Capture The Flag competitions and educational labs.
+
+---
+
 ## 🛠️ Build Instructions
 
 ### Prerequisites
