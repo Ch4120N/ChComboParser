@@ -9,3 +9,22 @@
 #include <cstdlib>
 #include <thread>
 
+struct Config {
+    std::string inputFile;
+    std::string outputFile;
+    std::string symbol       = ":";
+    int         index        = 1;       // 0 = username, 1 = password
+    int         threads      = 0;       // 0 = auto-detect
+    bool        deduplicate  = true;
+    bool        sortOutput   = false;
+    bool        countOnly    = false;
+    bool        verbose      = false;
+    bool        quiet        = false;
+    bool        trimSpaces   = true;
+    bool        skipEmpty    = true;
+    bool        lowercase    = false;
+    bool        uppercase    = false;
+    size_t      minLength    = 0;
+    size_t      maxLength    = 0;       // 0 = no limit
+    bool        showProgress = true;
+};
