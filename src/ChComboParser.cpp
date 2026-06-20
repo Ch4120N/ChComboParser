@@ -50,3 +50,17 @@ static std::string formatBytes(size_t bytes) {
     return oss.str();
 }
 
+static std::string formatDuration(double seconds) {
+    if (seconds < 1.0) return std::to_string(static_cast<int>(seconds * 1000)) + " ms";
+    if (seconds < 60.0) {
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(2) << seconds << " s";
+        return oss.str();
+    }
+    int mins = static_cast<int>(seconds) / 60;
+    double secs = seconds - mins * 60;
+    std::ostringstream oss;
+    oss << mins << "m " << std::fixed << std::setprecision(1) << secs << "s";
+    return oss.str();
+}
+
