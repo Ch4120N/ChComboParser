@@ -69,5 +69,24 @@ int main(int argc, char* argv[]) {
 
     if (!cfg.quiet) printBanner();
 
-    
+    if (!fs::exists(cfg.inputFile)) {
+        std::cerr << "Error: Input file does not exist: " << cfg.inputFile << "\n";
+        return 1;
+    }
+
+    size_t fileSize = fs::file_size(cfg.inputFile);
+    if (fileSize == 0) {
+        std::cerr << "Error: Input file is empty.\n";
+        return 1;
+    }
+
+    if (!cfg.quiet) {
+        std::cout << "  Input File  : " << cfg.inputFile << "\n"
+                  << "  Output File : " << (cfg.countOnly ? "(count only)" : cfg.outputFile) << "\n"
+                  << "  Symbol      : '" << cfg.symbol << "'\n"
+                  << "  Index       : " << cfg.index << "\n"
+                  << "  Threads     : " << cfg.threads << "\n"
+                  << "  Deduplicate : " << (cfg.deduplicate ? "Yes" : "No") << "\n"
+                  << "  File Size   : " << formatBytes(fileSize) << "\n\n";
+    }
 }
