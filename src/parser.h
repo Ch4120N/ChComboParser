@@ -112,3 +112,96 @@ inline std::vector<Chunk> splitIntoChunks(const std::string& fileContent, size_t
     return chunks;
 }
 
+// Core of the Parser
+
+inline void processChunk(
+    const Chunk& chunk,
+    const std::string& symbol,
+    int index,
+    bool trimSpaces,
+    bool skipEmpty,
+    bool lowercase,
+    bool uppercase,
+    size_t minLength,
+    size_t maxLength,
+    ParseStats& stats,
+    std::vector<std::string>& localResults,
+    std::atomic<size_t>& bytesProcessed,
+    ProgressBar& progress)
+{
+    const char* p   = chunk.data;
+    const char* end = chunk.data + chunk.length;
+    const char* lineStart = p;
+
+    while (p <= end) {
+        if (p == end || *p == '\n') {
+            size_t lineLen = p - lineStart;
+
+            // Handle \r\n
+            if (lineLen > 0 && lineStart[lineLen - 1] == '\r') --lineLen;
+
+            if (lineLen > 0) {
+                stats.totalLines++;
+
+                std::string line(lineStart, lineLen);
+                size_t symPos = line.find(symbol);
+
+                if (symPos == std::string::npos) {
+                    stats.skippedNoSymbol++;
+                } else {
+                    // Split by symbol — we only need the field at `index`
+                    int currentField = 0;
+                    size_t fieldStart = 0;
+                    bool found = false;
+                    std::string field;
+
+                    size_t searchPos = 0;
+                    while (true) {
+                        size_t nextSym = line.find(symbol, searchPos);
+                        if (currentField == index) {
+                            if (nextSym == std::string::npos) {
+                                field = line.substr(fieldStart);
+                            } else {
+                                field = line.substr(fieldStart, nextSym - fieldStart);
+                            }
+                            found = true;
+                            break;
+                        }
+                        if (nextSym == std::string::npos) break;
+                        fieldStart = nextSym + symbol.size();
+                        searchPos = fieldStart;
+                        currentField++;
+                    }
+
+                    if (!found) {
+                        stats.skippedIndexOOB++;
+                    } else {
+                        if (trimSpaces) field = trim(field);
+
+                        if (skipEmpty && field.empty()) {
+                            stats.skippedEmpty++;
+                        } else {
+                            // Length filter
+                            if (minLength > 0 && field.size() < minLength) {
+                                stats.skippedLength++;
+                            } else if (maxLength > 0 && field.size() > maxLength) {
+                                stats.skippedLength++;
+                            } else {
+                                if (lowercase) toLowerInPlace(field);
+                                if (uppercase) toUpperInPlace(field);
+
+                                localResults.push_back(std::move(field));
+                                stats.validExtracted++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            bytesProcessed += (p - lineStart) + 1;
+            progress.update(bytesProcessed.load());
+            lineStart = p + 1;
+        }
+        ++p;
+    }
+}
