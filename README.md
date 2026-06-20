@@ -34,24 +34,31 @@
 ## 🛠️ Build Instructions
 
 ### Prerequisites
-- C++17 compatible compiler (GCC, Clang, or MSVC)
-- CMake (version 3.14 or higher)
+- **C++17** compatible compiler (GCC 9+, Clang 9+, or MSVC 2019+)
+- **CMake** (version 3.14 or higher)
 
-### Compilation
-
+### 🐧 Linux & 🍎 macOS
 ```bash
-# Clone the repository
 git clone https://github.com/Ch4120N/ChComboParser.git
 cd ChComboParser
-
-# Create build directory and configure
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-
-# Compile
 make -j$(nproc)
+```
 
-# (Optional) Install to system path
+### 🪟 Windows (Visual Studio)
+Open the **x64 Native Tools Command Prompt** and run:
+```cmd
+git clone https://github.com/Ch4120N/ChComboParser.git
+cd ChComboParser
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
+```
+*(The compiled binary will be in `build\Release\ChComboParser.exe`)*
+
+### Installation (Linux/macOS)
+```bash
 sudo make install
 ```
 
