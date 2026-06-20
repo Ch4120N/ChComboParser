@@ -89,4 +89,11 @@ int main(int argc, char* argv[]) {
                   << "  Deduplicate : " << (cfg.deduplicate ? "Yes" : "No") << "\n"
                   << "  File Size   : " << formatBytes(fileSize) << "\n\n";
     }
+
+    auto t0 = std::chrono::high_resolution_clock::now();
+
+    if (!cfg.quiet) std::cout << "  [1/4] Reading input file...\n";
+    std::string fileContent = readFile(cfg.inputFile);
+
+    
 }
