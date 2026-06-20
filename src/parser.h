@@ -41,5 +41,9 @@ inline void toUpperInPlace(std::string& s) {
 }
 
 class ProgressBar {
+private:
+    size_t total_;
+    bool enabled_;
+    std::atomic<int> lastPercent_;
 
 };
