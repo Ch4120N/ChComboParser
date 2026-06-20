@@ -65,5 +65,7 @@ static std::string formatDuration(double seconds) {
 }
 
 int main(int argc, char* argv[]) {
+    Config cfg = parseArgs(argc, argv);
+
     
 }
