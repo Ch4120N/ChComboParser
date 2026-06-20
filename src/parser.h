@@ -77,3 +77,38 @@ public:
         std::cerr << "] 100%\n";
     }
 };
+
+struct Chunk {
+    const char* data;
+    size_t      length;
+};
+
+inline std::vector<Chunk> splitIntoChunks(const std::string& fileContent, size_t numChunks) {
+    std::vector<Chunk> chunks;
+    if (fileContent.empty() || numChunks == 0) return chunks;
+
+    size_t totalSize = fileContent.size();
+    size_t chunkSize = totalSize / numChunks;
+    if (chunkSize == 0) chunkSize = totalSize;
+
+    const char* data = fileContent.data();
+    size_t start = 0;
+
+    for (size_t i = 0; i < numChunks && start < totalSize; ++i) {
+        size_t end;
+        if (i == numChunks - 1) {
+            end = totalSize;
+        } else {
+            end = start + chunkSize;
+            // Move end to next newline to avoid splitting a line
+            while (end < totalSize && data[end] != '\n') ++end;
+            if (end < totalSize) ++end; // include the newline
+        }
+        if (end > start) {
+            chunks.push_back({data + start, end - start});
+        }
+        start = end;
+    }
+    return chunks;
+}
+
