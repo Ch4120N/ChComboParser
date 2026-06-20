@@ -196,5 +196,28 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    auto t2 = std::chrono::high_resolution_clock::now();
+    double totalElapsed = std::chrono::duration<double>(t2 - t0).count();
+
+    if (cfg.verbose || !cfg.quiet) {
+        std::cout << "\n"
+                  << "  ╔══════════════════════════════════════╗\n"
+                  << "  ║           FINAL STATISTICS           ║\n"
+                  << "  ╠══════════════════════════════════════╣\n"
+                  << "  ║  Total Lines Processed : " << std::setw(12) << stats.totalLines.load()          << " ║\n"
+                  << "  ║  Valid Extracted       : " << std::setw(12) << stats.validExtracted.load()      << " ║\n"
+                  << "  ║  Unique Results        : " << std::setw(12) << finalResults.size()               << " ║\n"
+                  << "  ║  Duplicates Removed    : " << std::setw(12) << stats.duplicatesRemoved.load()   << " ║\n"
+                  << "  ║  Skipped (no symbol)   : " << std::setw(12) << stats.skippedNoSymbol.load()     << " ║\n"
+                  << "  ║  Skipped (index OOB)   : " << std::setw(12) << stats.skippedIndexOOB.load()     << " ║\n"
+                  << "  ║  Skipped (empty)       : " << std::setw(12) << stats.skippedEmpty.load()        << " ║\n"
+                  << "  ║  Skipped (length)      : " << std::setw(12) << stats.skippedLength.load()       << " ║\n"
+                  << "  ╠══════════════════════════════════════╣\n"
+                  << "  ║  Processing Time       : " << std::setw(12) << formatDuration(elapsed)            << " ║\n"
+                  << "  ║  Total Time (w/ I/O)   : " << std::setw(12) << formatDuration(totalElapsed)       << " ║\n"
+                  << "  ║  Throughput            : " << std::setw(12) << formatBytes(static_cast<size_t>(fileSize / elapsed)) + "/s" << " ║\n"
+                  << "  ╚══════════════════════════════════════╝\n";
+    }
+
     
 }
