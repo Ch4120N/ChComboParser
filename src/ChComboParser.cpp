@@ -24,3 +24,6 @@ Project: ChComboParser
 #include <filesystem>
 #include <iomanip>
 
+
+namespace fs = std::filesystem;
+
