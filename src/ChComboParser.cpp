@@ -169,4 +169,10 @@ int main(int argc, char* argv[]) {
                                 std::make_move_iterator(v.end()));
         }
     }
+
+    if (cfg.sortOutput) {
+        std::sort(finalResults.begin(), finalResults.end());
+    }
+
+    
 }
