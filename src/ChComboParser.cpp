@@ -139,5 +139,34 @@ int main(int argc, char* argv[]) {
 
     progress.finish();
 
-    
+    if (!cfg.quiet) std::cout << "  [3/4] Merging results";
+    if (cfg.deduplicate) std::cout << " & removing duplicates";
+    std::cout << "...\n";
+
+    std::vector<std::string> finalResults;
+
+    if (cfg.deduplicate) {
+        // Estimate total for reserve
+        size_t total = 0;
+        for (auto& v : threadResults) total += v.size();
+        finalResults.reserve(total);
+
+        std::unordered_set<std::string> seen;
+        seen.reserve(total);
+
+        for (auto& v : threadResults) {
+            for (auto& s : v) {
+                if (seen.insert(s).second) {
+                    finalResults.push_back(std::move(s));
+                }
+            }
+        }
+        stats.duplicatesRemoved = total - finalResults.size();
+    } else {
+        for (auto& v : threadResults) {
+            finalResults.insert(finalResults.end(),
+                                std::make_move_iterator(v.begin()),
+                                std::make_move_iterator(v.end()));
+        }
+    }
 }
