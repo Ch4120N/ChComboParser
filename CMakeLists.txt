@@ -11,3 +11,9 @@ find_package(Threads REQUIRED)
 add_executable(ChComboParser
     src/ChComboParser.cpp
 )
+
+target_link_libraries(ChComboParser PRIVATE Threads::Threads)
+target_include_directories(ChComboParser PRIVATE src)
+
+# Install
+install(TARGETS ChComboParser DESTINATION bin)
