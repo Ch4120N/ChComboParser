@@ -219,5 +219,10 @@ int main(int argc, char* argv[]) {
                   << "  ╚══════════════════════════════════════╝\n";
     }
 
-    
+    if (!cfg.quiet) {
+        std::cout << "\n  ✓ Done! " << finalResults.size()
+                  << " unique entries in " << formatDuration(totalElapsed) << "\n\n";
+    }
+
+    return 0;
 }
