@@ -90,10 +90,17 @@ int main(int argc, char* argv[]) {
                   << "  File Size   : " << formatBytes(fileSize) << "\n\n";
     }
 
+    // Reading the input file
     auto t0 = std::chrono::high_resolution_clock::now();
 
     if (!cfg.quiet) std::cout << "  [1/4] Reading input file...\n";
     std::string fileContent = readFile(cfg.inputFile);
 
+    // Split the fileContent into chunks
+    size_t numChunks = static_cast<size_t>(cfg.threads) * 4; // oversubscribe for balance
+    std::vector<Chunk> chunks = splitIntoChunks(fileContent, numChunks);
+
+    if (!cfg.quiet) std::cout << "  [2/4] Processing with " << cfg.threads
+                              << " threads (" << chunks.size() << " chunks)...\n";
     
 }
