@@ -47,22 +47,24 @@ private:
     std::atomic<int> lastPercent_;
 public:
     ProgressBar(size_t total, bool enabled)
-        : total_(total), enabled_(enabled), lastPercent_(0) {}
+        : total_(total), enabled_(enabled), lastPercent_(-1) {}
 
     void update(size_t current) {
-        if (!enabled_) return;
+        if (!enabled_ || total_ == 0) return;
         int pct = static_cast<int>((current * 100) / total_);
+        if (pct > 100) pct = 100;
         if (pct == lastPercent_.load()) return;
         lastPercent_ = pct;
 
         int barWidth = 40;
         int pos = barWidth * pct / 100;
 
+        // Use standard ASCII characters to avoid multi-byte literal bugs
         std::cerr << "\r  [";
         for (int i = 0; i < barWidth; ++i) {
-            if (i < pos) std::cerr << '█';
-            else if (i == pos) std::cerr << '▓';
-            else std::cerr << '░';
+            if (i < pos) std::cerr << '#';
+            else if (i == pos) std::cerr << '>';
+            else std::cerr << '-';
         }
         std::cerr << "] " << pct << "%";
         std::cerr.flush();
@@ -73,7 +75,7 @@ public:
         std::cerr << "\r";
         int barWidth = 40;
         std::cerr << "  [";
-        for (int i = 0; i < barWidth; ++i) std::cerr << '█';
+        for (int i = 0; i < barWidth; ++i) std::cerr << '#';
         std::cerr << "] 100%\n";
     }
 };
