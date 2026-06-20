@@ -103,4 +103,8 @@ int main(int argc, char* argv[]) {
     if (!cfg.quiet) std::cout << "  [2/4] Processing with " << cfg.threads
                               << " threads (" << chunks.size() << " chunks)...\n";
     
+    ParseStats stats;
+    std::atomic<size_t> bytesProcessed{0};
+    ProgressBar progress(fileSize, cfg.showProgress && !cfg.quiet);
+    
 }
