@@ -27,3 +27,16 @@ Project: ChComboParser
 
 namespace fs = std::filesystem;
 
+static std::string readFile(const std::string& path) {
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        std::cerr << "Error: Cannot open input file: " << path << "\n";
+        std::exit(1);
+    }
+    auto size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::string content(size, '\0');
+    file.read(content.data(), size);
+    return content;
+}
+
