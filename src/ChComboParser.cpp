@@ -106,5 +106,38 @@ int main(int argc, char* argv[]) {
     ParseStats stats;
     std::atomic<size_t> bytesProcessed{0};
     ProgressBar progress(fileSize, cfg.showProgress && !cfg.quiet);
+
+    // Each thread gets its own results vector
+    std::vector<std::vector<std::string>> threadResults(chunks.size());
+
+    {
+        ThreadPool pool(cfg.threads);
+        std::vector<std::future<void>> futures;
+
+        for (size_t i = 0; i < chunks.size(); ++i) {
+            futures.push_back(pool.enqueue([&, i] {
+                processChunk(
+                    chunks[i],
+                    cfg.symbol,
+                    cfg.index,
+                    cfg.trimSpaces,
+                    cfg.skipEmpty,
+                    cfg.lowercase,
+                    cfg.uppercase,
+                    cfg.minLength,
+                    cfg.maxLength,
+                    stats,
+                    threadResults[i],
+                    bytesProcessed,
+                    progress
+                );
+            }));
+        }
+
+        for (auto& f : futures) f.get();
+    }
+
+    progress.finish();
+
     
 }
