@@ -1,0 +1,16 @@
+admin:password123
+root:toor
+user@example.com:MyP@ssw0rd
+john.doe|s3cret!
+test:test
+admin:password123
+root@toor
+guest:
+:emptypass
+info@site.com:Complex#Pass99
+admin:short
+user1:averylongpasswordthatexceedslimits1234567890
+root:toor
+admin:Admin123
+jane:JaneDoe2024
+backup:backup2023
