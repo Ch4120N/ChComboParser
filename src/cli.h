@@ -75,3 +75,99 @@ inline void printUsage(const char* prog) {
               << "  " << prog << " combos.txt - : 1 -c -v\n"
               << std::endl;
 }
+
+inline Config parseArgs(int argc, char* argv[]) {
+    Config cfg;
+
+    if (argc < 2) {
+        printUsage(argv[0]);
+        std::exit(1);
+    }
+
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; ++i) {
+        args.emplace_back(argv[i]);
+    }
+
+    int positional = 0;
+    for (size_t i = 0; i < args.size(); ++i) {
+        const auto& a = args[i];
+
+        if (a == "-h" || a == "--help") {
+            printUsage(argv[0]);
+            std::exit(0);
+        }
+        else if (a == "-t" || a == "--threads") {
+            if (++i >= args.size()) { std::cerr << "Error: --threads requires a value\n"; std::exit(1); }
+            cfg.threads = std::atoi(args[i].c_str());
+        }
+        else if (a == "-d" || a == "--no-dedup") {
+            cfg.deduplicate = false;
+        }
+        else if (a == "-s" || a == "--sort") {
+            cfg.sortOutput = true;
+        }
+        else if (a == "-c" || a == "--count") {
+            cfg.countOnly = true;
+        }
+        else if (a == "-m" || a == "--min-length") {
+            if (++i >= args.size()) { std::cerr << "Error: --min-length requires a value\n"; std::exit(1); }
+            cfg.minLength = std::stoull(args[i]);
+        }
+        else if (a == "-M" || a == "--max-length") {
+            if (++i >= args.size()) { std::cerr << "Error: --max-length requires a value\n"; std::exit(1); }
+            cfg.maxLength = std::stoull(args[i]);
+        }
+        else if (a == "--lowercase") {
+            cfg.lowercase = true;
+        }
+        else if (a == "--uppercase") {
+            cfg.uppercase = true;
+        }
+        else if (a == "--no-trim") {
+            cfg.trimSpaces = false;
+        }
+        else if (a == "--keep-empty") {
+            cfg.skipEmpty = false;
+        }
+        else if (a == "-v" || a == "--verbose") {
+            cfg.verbose = true;
+        }
+        else if (a == "-q" || a == "--quiet") {
+            cfg.quiet = true;
+            cfg.showProgress = false;
+        }
+        else if (a == "--no-progress") {
+            cfg.showProgress = false;
+        }
+        else if (a[0] == '-') {
+            std::cerr << "Error: Unknown option '" << a << "'\n";
+            std::exit(1);
+        }
+        else {
+            switch (positional) {
+                case 0: cfg.inputFile  = a; break;
+                case 1: cfg.outputFile = a; break;
+                case 2: cfg.symbol     = a; break;
+                case 3: cfg.index      = std::atoi(a.c_str()); break;
+                default:
+                    std::cerr << "Error: Too many positional arguments\n";
+                    std::exit(1);
+            }
+            ++positional;
+        }
+    }
+
+    if (positional < 4) {
+        std::cerr << "Error: Missing required arguments.\n\n";
+        printUsage(argv[0]);
+        std::exit(1);
+    }
+
+    if (cfg.threads <= 0) {
+        cfg.threads = static_cast<int>(std::thread::hardware_concurrency());
+        if (cfg.threads <= 0) cfg.threads = 4;
+    }
+
+    return cfg;
+}
