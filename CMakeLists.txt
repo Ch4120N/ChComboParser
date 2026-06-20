@@ -8,3 +8,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -DNDEBUG")
 # Find threads
 find_package(Threads REQUIRED)
 
+add_executable(ChComboParser
+    src/ChComboParser.cpp
+)
