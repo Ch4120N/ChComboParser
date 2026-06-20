@@ -64,3 +64,6 @@ static std::string formatDuration(double seconds) {
     return oss.str();
 }
 
+int main(int argc, char* argv[]) {
+    
+}
