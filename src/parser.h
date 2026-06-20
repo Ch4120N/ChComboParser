@@ -40,3 +40,6 @@ inline void toUpperInPlace(std::string& s) {
     for (auto& c : s) c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
 }
 
+class ProgressBar {
+
+};
