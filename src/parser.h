@@ -119,6 +119,91 @@ inline std::vector<Chunk> splitIntoChunks(const std::string& fileContent, size_t
     return chunks;
 }
 
+inline void processLine(
+    const char* lineStart,
+    size_t lineLen,
+    const std::string& symbol,
+    int index,
+    bool trimSpaces,
+    bool skipEmpty,
+    bool lowercase,
+    bool uppercase,
+    size_t minLength,
+    size_t maxLength,
+    ParseStats& stats,
+    std::vector<std::string>& localResults)
+{
+    // Handle \r\n
+    if (lineLen > 0 && lineStart[lineLen - 1] == '\r') --lineLen;
+    
+    stats.totalLines++;
+
+    if (lineLen == 0) {
+        if (skipEmpty) stats.skippedEmpty++;
+        return;
+    }
+
+    std::string line(lineStart, lineLen);
+    size_t symPos = line.find(symbol);
+
+    if (symPos == std::string::npos) {
+        stats.skippedNoSymbol++;
+        return;
+    }
+
+    // Split by symbol — we only need the field at `index`
+    int currentField = 0;
+    size_t fieldStart = 0;
+    bool found = false;
+    std::string field;
+
+    size_t searchPos = 0;
+    while (true) {
+        size_t nextSym = line.find(symbol, searchPos);
+        if (currentField == index) {
+            if (nextSym == std::string::npos) {
+                field = line.substr(fieldStart);
+            } else {
+                field = line.substr(fieldStart, nextSym - fieldStart);
+            }
+            found = true;
+            break;
+        }
+        if (nextSym == std::string::npos) break;
+        fieldStart = nextSym + symbol.size();
+        searchPos = fieldStart;
+        currentField++;
+    }
+
+    if (!found) {
+        stats.skippedIndexOOB++;
+        return;
+    }
+
+    if (trimSpaces) field = trim(field);
+
+    if (skipEmpty && field.empty()) {
+        stats.skippedEmpty++;
+        return;
+    }
+
+    // Length filter
+    if (minLength > 0 && field.size() < minLength) {
+        stats.skippedLength++;
+        return;
+    }
+    if (maxLength > 0 && field.size() > maxLength) {
+        stats.skippedLength++;
+        return;
+    }
+
+    if (lowercase) toLowerInPlace(field);
+    if (uppercase) toUpperInPlace(field);
+
+    localResults.push_back(std::move(field));
+    stats.validExtracted++;
+}
+
 // Core of the Parser
 
 inline void processChunk(
