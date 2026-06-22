@@ -103,7 +103,10 @@ inline std::vector<Chunk> splitIntoChunks(const std::string& fileContent, size_t
 
     for (size_t i = 0; i < numChunks && start < totalSize; ++i) {
         size_t end;
-        if (i == numChunks - 1) {
+        
+        // FIX: If this is the last chunk, OR the remaining data is smaller than chunkSize,
+        // we must cap 'end' exactly at 'totalSize' to prevent reading out-of-bounds memory.
+        if (i == numChunks - 1 || start + chunkSize >= totalSize) {
             end = totalSize;
         } else {
             end = start + chunkSize;
@@ -111,6 +114,7 @@ inline std::vector<Chunk> splitIntoChunks(const std::string& fileContent, size_t
             while (end < totalSize && data[end] != '\n') ++end;
             if (end < totalSize) ++end; // include the newline
         }
+        
         if (end > start) {
             chunks.push_back({data + start, end - start});
         }
