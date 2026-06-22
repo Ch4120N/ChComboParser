@@ -72,3 +72,5 @@ dkms.conf
 # Other Directories
 backup/
 build/
+make/
+Make/
