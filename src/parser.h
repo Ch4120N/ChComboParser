@@ -45,6 +45,7 @@ private:
     size_t total_;
     bool enabled_;
     std::atomic<int> lastPercent_;
+    std::mutex mutex_;
 public:
     ProgressBar(size_t total, bool enabled)
         : total_(total), enabled_(enabled), lastPercent_(-1) {}
@@ -54,12 +55,15 @@ public:
         int pct = static_cast<int>((current * 100) / total_);
         if (pct > 100) pct = 100;
         if (pct == lastPercent_.load()) return;
+
+        std::lock_guard<std::mutex> lock(mutex_);
+        // Double-check after acquiring lock
+        if (pct == lastPercent_.load()) return;
         lastPercent_ = pct;
 
         int barWidth = 40;
         int pos = barWidth * pct / 100;
 
-        // Use standard ASCII characters to avoid multi-byte literal bugs
         std::cerr << "\r  [";
         for (int i = 0; i < barWidth; ++i) {
             if (i < pos) std::cerr << '#';
@@ -72,6 +76,7 @@ public:
 
     void finish() {
         if (!enabled_) return;
+        std::lock_guard<std::mutex> lock(mutex_);
         std::cerr << "\r";
         int barWidth = 40;
         std::cerr << "  [";
