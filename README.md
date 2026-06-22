@@ -1,12 +1,11 @@
+<h1 align="center">⚡ ChComboParser</h1>
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.0.1-blue?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/C%2B%2B-17-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" alt="C++17">
   <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" alt="Platform">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/License-GPL v3-green?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Author-Ch4120N-red?style=for-the-badge" alt="Author">
 </p>
-
-<h1 align="center">⚡ ChComboParser</h1>
 <p align="center">
   <b>The Ultimate High-Performance, Multi-Threaded Combo List Parser & Credential Extractor</b><br>
   <i>Blazing fast C++17 utility for parsing, cleaning, deduplicating, and filtering user:pass combolists.</i>
@@ -78,7 +77,7 @@ If you prefer to compile from source, ChComboParser is 100% cross-platform.
 - **C++17 Compiler:** GCC 9+, Clang 9+, or MSVC 2019+
 - **CMake:** Version 3.14 or higher
 
-### 🐧 Linux & 🍎 macOS
+### Linux & macOS
 ```bash
 git clone https://github.com/Ch4120N/ChComboParser.git
 cd ChComboParser
@@ -87,7 +86,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)  # Use $(sysctl -n hw.ncpu) on macOS
 ```
 
-### 🪟 Windows (Visual Studio)
+### Windows (Visual Studio)
 Open the **x64 Native Tools Command Prompt**:
 ```cmd
 git clone https://github.com/Ch4120N/ChComboParser.git
